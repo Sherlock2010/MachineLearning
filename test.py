@@ -1,3 +1,6 @@
+"""
+test for sigmoid function 
+"""
 from __future__ import division
 import time
 from numpy import *
@@ -19,7 +22,7 @@ import sys
 1.5  1    0
 """
 alpha = 0.01
-maxCycles = 1000000
+maxCycles = 100000
 maxNumber = 5
 
 def loadData(file_path):
@@ -58,6 +61,7 @@ def function(dataMatrixIn, labelMatrixIn, weights):
 	r = 0
 	# print "--------------"
 	for i in range(m):
+		print "%dth number : %f %f" % (i, (dataMatrix[i] * weights).tolist()[0][0], math.exp(labelMatrixIn[i] * math.log(sigmoid((dataMatrix[i] * weights).tolist()[0][0])) + (1 - labelMatrixIn[i]) * math.log(1 - sigmoid((dataMatrix[i] * weights).tolist()[0][0]))))
 		r += labelMatrixIn[i] * math.log(sigmoid((dataMatrix[i] * weights).tolist()[0][0])) + (1 - labelMatrixIn[i]) * math.log(1 - sigmoid((dataMatrix[i] * weights).tolist()[0][0]))
 		
 		# print "%d , %f" % (i, math.exp(labelMatrixIn[i] * math.log(sigmoid((dataMatrix[i] * weights).tolist()[0][0])) + (1 - labelMatrixIn[i]) * math.log(1 - sigmoid((dataMatrix[i] * weights).tolist()[0][0]))))
@@ -73,38 +77,7 @@ def randomMatrix(n):
 
 	return mat(tmp).transpose()
 
-def simpleGradAscent(dataMatrixIn, labelMatrixIn):
-        
-        dataMatrix = mat(dataMatrixIn)
-        labelMatrix = mat(labelMatrixIn).transpose()
-         
-        #m denotes the column number
-        #n denotes the row number(sample number)
-        m, n = shape(dataMatrix)
-         
-        weights = randomMatrix(n)
-
-        for k in range(maxCycles):
-            h = sigmoid(dataMatrix * weights)
-            error = (labelMatrix - h)
-
-            direction = randomMatrix(n)
-           
-            # print shape(direction.transpose())
-            # print shape(dataMatrix.transpose())
-            # print shape(error)
-            while(((direction.transpose()) * (dataMatrix.transpose()) * error).tolist()[0][0] < 0):
-            	direction = randomMatrix(n)	
-
-            # print "function = %f" % function(dataMatrixIn, labelMatrixIn, weights)
-
-            weights = weights + alpha * direction
-    
-            # print "function = %f" % math.exp(function(dataMatrixIn, labelMatrixIn, weights))
-
-        return weights
-
-def classicalGradAscent(dataMatrixIn, labelMatrixIn):
+def gradAscent(dataMatrixIn, labelMatrixIn):
         
         dataMatrix = mat(dataMatrixIn)
         labelMatrix = mat(labelMatrixIn).transpose()
@@ -180,32 +153,20 @@ if __name__ == '__main__':
 
 	start_time = time.time()
 	
-	file_path = './data_1'
+	file_path = './data_5'
 
 	dataMatrix, labelMatrix, X1, Y1, X2, Y2 = loadData(file_path)
 
-	# print mat(dastaMatrix)
-	# print mat(labelMatrix).transpose()
+	weights = gradAscent(dataMatrix, labelMatrix)
 
-	arg = sys.argv
+	# print "weights = %f, %f, %f" % (weights[0] / weights[1], 1, weights[2] / weights[1])
+	print "weights = %f, %f, %f" % (weights[0] , weights[1], weights[2])
 
-	if(arg[1] == "simple"):
-		# print "simple"
-		weights = simpleGradAscent(dataMatrix, labelMatrix)
-	if(arg[1] == "classical"):
-		# print "classical"
-		weights = classicalGradAscent(dataMatrix, labelMatrix)
-	if(arg[1] == "typical"):
-		weights = [-10.567805, 1.000000, 5.592104]
-		weights = mat(weights).transpose()
-		print "function = %f" % math.exp(function(dataMatrix, labelMatrix, weights))
-	# count(dataMatrix, labelMatrix, weights)
-
-	print "weights = %f, %f, %f" % (weights[0] / weights[1], 1, weights[2] / weights[1])
+	print "function = %f" % math.exp(function(dataMatrix, labelMatrix, weights))
 	end_time = time.time()
 
 	print "program run for %f seconds" % (end_time - start_time)
 	draw_figure()
 			
 
-	
+
