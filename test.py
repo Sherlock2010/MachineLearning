@@ -22,7 +22,7 @@ import sys
 1.5  1    0
 """
 alpha = 0.01
-maxCycles = 100000
+maxCycles = 1000000
 maxNumber = 5
 
 def loadData(file_path):
@@ -153,7 +153,7 @@ if __name__ == '__main__':
 
 	start_time = time.time()
 	
-	file_path = './data_5'
+	file_path = './data_1'
 
 	dataMatrix, labelMatrix, X1, Y1, X2, Y2 = loadData(file_path)
 
